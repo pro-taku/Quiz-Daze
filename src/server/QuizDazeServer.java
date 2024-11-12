@@ -33,19 +33,18 @@ public class QuizDazeServer {
 
     int process(Socket socket) {
         try {
+            System.out.println("hello");
             while (true) {
                 BufferedReader inFromClient = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 DataOutputStream outToClient = new DataOutputStream(socket.getOutputStream());
 
-                // Todo. 변경할 것
+                System.out.println("listening");
                 String s = inFromClient.readLine();
-                System.out.println("[Server] received: " + s);
-                if (s.equals("exit")) {
-                    outToClient.writeBytes("-1");
-                    throw new Exception("exit");
+                if (s.equals("/quiz/start")) {
+                    System.out.println("[Server] start quiz");
+                    sendQuiz(inFromClient, outToClient);
                 }
-                if (s.equals("-1")) {
-                    outToClient.writeBytes("-1");
+                else if (s.equals("-1")) {
                     return 0;
                 }
 
@@ -54,6 +53,24 @@ public class QuizDazeServer {
         }
         catch (Exception e) {
             return -1;
+        }
+    }
+
+    void sendQuiz(BufferedReader inFromClient, DataOutputStream outToClient) {
+        try {
+            while (true) {
+                outToClient.writeBytes("Can you answer this question?\n");
+                String answer = inFromClient.readLine();
+
+                if (answer.equalsIgnoreCase("yes")) {
+                    outToClient.writeBytes("1");
+                } else {
+                    outToClient.writeBytes("0");
+                    return;
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 }
