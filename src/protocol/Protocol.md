@@ -1,4 +1,4 @@
-# 퀴즈다제~ Protocol
+# 퀴즈다제~ protocol
 
 ---
 
@@ -7,11 +7,8 @@
 
 ### 목차
 1. structure
-   1. Header
-      1. type
-      2. url
-   2. Body
-2. API List
+2. Header
+3. Body
 
 ---
 
@@ -87,6 +84,10 @@ url은 요청의 주소를 나타냅니다. 문자열로 이루어져있으며, 
 ```
 url:"/api/example/use"
 ```
+
+### status
+
+status는 요청의 처리 결과를 나타내며, `OK`와 `ERROR`로 구분합니다.
 
 ## Body
 

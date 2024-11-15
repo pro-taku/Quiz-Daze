@@ -1,15 +1,13 @@
-package server;
+package protocol;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class Protocol {
     static public Map<String, String> splitHeaderBody(String msg) throws Exception {
         int mid = msg.indexOf("}&{");
         int headerStart = 1;
-        int headerEnd = mid - 1;
+        int headerEnd = mid;
         int bodyStart = mid + 3;
         int bodyEnd = msg.length() - 1;
 
@@ -24,7 +22,7 @@ public class Protocol {
     }
 
     static public Map<String, String> decodeContent(String rawHeader) {
-        String[] parts = rawHeader.split("\n");
+        String[] parts = rawHeader.split("\\\\n");
         Map<String, String> result = new HashMap<>(Map.of());
         for (String part : parts) {
             if (part.isBlank() || !part.contains(":")) {
@@ -34,7 +32,7 @@ public class Protocol {
             String value = part
                     .replaceFirst(key + ":", "")
                     .trim()
-                    .replace("\n", "");
+                    .replace("\\\\n", "");
             result.put(key, value);
         }
         return result;

@@ -1,4 +1,4 @@
-package server.emnu;
+package protocol.emnu;
 
 public enum Type {
     GET("GET"),

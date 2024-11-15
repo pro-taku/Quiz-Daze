@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="quiz_daze:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/quiz_daze_jar</output-path>
+    <root id="archive" name="quiz_daze.jar">
+      <element id="module-output" name="quiz_daze" />
+    </root>
+  </artifact>
+</component>
