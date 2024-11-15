@@ -24,6 +24,7 @@ public class CustomSocketData {
         this.body = body;
     }
 
+    // String을 CustomSocketData로 변환
     static public CustomSocketData decode(String rawMessage) throws Exception {
         Map<String, String> parts = Protocol.splitHeaderBody(rawMessage);
         Map<String, String> header = Protocol.decodeContent(parts.get("header"));
@@ -38,6 +39,7 @@ public class CustomSocketData {
         );
     }
 
+    // CustomSocketData를 String으로 변환
     public String encode() {
         return "{" +
                 "sender:" + sender.value + "\\n" +
@@ -52,6 +54,7 @@ public class CustomSocketData {
                 "}";
     }
 
+    // 출력하기 위함
     public String toString() {
         String result = "";
         result += "sender: " + sender.value + "\n";

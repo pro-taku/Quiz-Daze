@@ -24,19 +24,24 @@ public class QuizDazeClient {
     }
 
     public void run() throws Exception {
+        // 클라이언트 소켓 생성
         System.out.println("[Client] run client");
         System.out.println("[Client] connect to " + host + ":" + port);
         Socket socket = new Socket(host, port);
+
+        // 소켓이 연결되지 않았을 경우
         if (!socket.isConnected()) {
             System.out.println("[Client] (Error) failed to connect");
             return;
         }
 
+        // Socket 통신을 위한 I/O
         inFromUser = new BufferedReader(new InputStreamReader(System.in));
         inFromServer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         outToServer = new DataOutputStream(socket.getOutputStream());
 
         while (true) {
+            // 퀴즈 시작
             System.out.println("""
                     
                     *** QuizDaze ***
@@ -44,7 +49,6 @@ public class QuizDazeClient {
                     1. start quiz
                     2. exit""");
             System.out.print("= ");
-
             int option;
             try {
                 option = Integer.parseInt(inFromUser.readLine());
@@ -55,6 +59,7 @@ public class QuizDazeClient {
                 continue;
             }
 
+            // 옵션에 따라 퀴즈를 시작/종료
             if (option == 1) {
                 int status = startQuiz();
                 if (status == -1) return;
@@ -74,7 +79,8 @@ public class QuizDazeClient {
         }
     }
 
-    int startQuiz() throws IOException, Exception {
+    int startQuiz() throws Exception {
+        // 서버에 퀴즈 게임을 시작함을 알림
         data = new CustomSocketData(
                 Sender.CLIENT,
                 Type.POST,
@@ -86,16 +92,20 @@ public class QuizDazeClient {
         System.out.println("===================================\n");
 
         while (true) {
+            // 데이터 수신
             data = CustomSocketData.decode(inFromServer.readLine());
             switch (data.url) {
+                // 만약 서버가 종료된 상황이면
                 case "/exit" -> {
                     System.out.println("[!] server closed the connection\n");
                     return -1;
                 }
+                // 만약 서버에서 에러가 발생한 상황이면
                 case "/error" -> {
                     System.out.println("[!] error occurred\n");
                     return -1;
                 }
+                // 만약 퀴즈 게임이 종료된 상황이면
                 case "/quiz/end" -> {
                     System.out.println("===================================\n");
                     System.out.println(
@@ -107,6 +117,7 @@ public class QuizDazeClient {
                 }
             }
 
+            // 퀴즈 게임 진행
             String quizId = data.url.split("/")[2];
             System.out.print(
                     "< Q" + quizId + " >\n" +
@@ -114,6 +125,7 @@ public class QuizDazeClient {
                     "> "
             );
 
+            // 답안 제출
             String answer = inFromUser.readLine();
             System.out.println();
             data = new CustomSocketData(
@@ -125,6 +137,7 @@ public class QuizDazeClient {
             );
             outToServer.writeBytes(data.encode() + '\n');
 
+            // 답안에 대한 결과 수신
             data = CustomSocketData.decode(inFromServer.readLine());
             int response = Integer.parseInt(data.body.get("correct"));
             if (response == 1) {

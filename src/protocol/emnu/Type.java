@@ -1,5 +1,6 @@
 package protocol.emnu;
 
+// 요청의 종류
 public enum Type {
     GET("GET"),
     POST("POST"),
